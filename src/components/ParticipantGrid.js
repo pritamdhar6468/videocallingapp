@@ -21,14 +21,14 @@ function ParticipantGrid({ participantIds, isPresenting, currentParticipantId, c
     <div className={`relative flex flex-col items-center justify-center w-full h-full`}>
       {/* Main Active Participant View */}
       {activeParticipantId && (
-        <div className={`flex-grow flex items-center justify-center`}>
+        <div className={`flex-grow flex items-center justify-center w-[95%]`}>
           <MemoizedParticipant participantId={activeParticipantId} />
         </div>
       )}
 
       {/* Creator View in Bottom-Right Corner */}
       {otherParticipantId && (
-        <div className="absolute bottom-4 right-4 flex flex-col">
+        <div className="absolute bottom-4 right-11 flex flex-col">
           <div className={`w-20 h-20`}>
             <MemoizedParticipant participantId={otherParticipantId} />
           </div>

@@ -9,6 +9,9 @@ import WebcamOffIcon from "../../icons/WebcamOffIcon";
 import WebcamOnIcon from "../../icons/Bottombar/WebcamOnIcon";
 import MicOffIcon from "../../icons/MicOffIcon";
 import MicOnIcon from "../../icons/Bottombar/MicOnIcon";
+import FrontCameraIcon from "../../icons/Bottombar/FrontCamera";
+import RearCameraIcon from "../../icons/Bottombar/RearCamera";
+import FrontCameraPermissionDenied from "../../icons/FrontCameraPermissionDenied";
 import MicPermissionDenied from "../../icons/MicPermissionDenied";
 import CameraPermissionDenied from "../../icons/CameraPermissionDenied";
 import DropDown from "../DropDown";
@@ -39,6 +42,7 @@ export function JoiningScreen({
     setSelectedSpeaker,
     isCameraPermissionAllowed,
     isMicrophonePermissionAllowed,
+    isFrontCameraPermissionAllowed,
     setIsCameraPermissionAllowed,
     setIsMicrophonePermissionAllowed,
   } = useMeetingAppContext();
@@ -457,6 +461,18 @@ export function JoiningScreen({
                           ) : (
                             <CameraPermissionDenied />
                           )}
+{/* 
+                           {isFrontCameraPermissionAllowed ? (
+                            <ButtonWithTooltip
+                              onClick={_toggleWebcam}
+                              onState={webcamOn}
+                              mic={false}
+                              OnIcon={FrontCameraIcon}
+                              OffIcon={RearCameraIcon}
+                            />
+                          ) : (
+                            <FrontCameraPermissionDenied />
+                          )} */}
                         </div>
                       </div>
                     </div>
