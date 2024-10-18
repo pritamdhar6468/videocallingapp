@@ -49,7 +49,7 @@ function ParticipantGrid({ participantIds, isPresenting, currentParticipantId, c
               ? "inset-0 absolute w-full h-full" // Active participant in full screen
               : isCreatorFullScreen
               ? "absolute bottom-4 right-6 w-[10rem] h-[7rem] z-10" // Active participant in small view when creator is full screen
-              : "flex-grow flex items-center justify-center w-[95%]" // Full view when creator is not full screen
+              : "flex-grow flex items-center justify-center w-[100%]" // Full view when creator is not full screen
           }`}
           // Only add onClick when not in full-screen mode
           onClick={!isActiveParticipantFullScreen ? toggleActiveParticipantFullScreen : null}
