@@ -14,6 +14,8 @@ import CameraPermissionDenied from "../../icons/CameraPermissionDenied";
 import DropDown from "../DropDown";
 import DropDownCam from "../DropDownCam";
 import DropDownSpeaker from "../DropDownSpeaker";
+import LoopIcon from "../../icons/Bottombar/FrontCamera";
+import RearCameraIcon from "../../icons/Bottombar/RearCamera"
 import { useMeetingAppContext } from "../../MeetingAppContextDef";
 import { toast } from "react-toastify";
 
@@ -481,8 +483,11 @@ export function JoiningScreen({
                           )}
 
                           {isMobile ? (
-                            <button onClick={toggleCamera}>
-                              Toggle Camera
+                            <button 
+                            onClick={toggleCamera}
+                            className={`rounded-full min-w-auto w-12 h-12 flex items-center justify-center 
+                              ${currentCameraIndex ? "bg-white" : "bg-green-650 text-white"}`}>
+                              <LoopIcon/>
                             </button>
                           ) : null}
                         </div>
