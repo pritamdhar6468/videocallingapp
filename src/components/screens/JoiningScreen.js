@@ -18,6 +18,7 @@ import LoopIcon from "../../icons/Bottombar/FrontCamera";
 import RearCameraIcon from "../../icons/Bottombar/RearCamera"
 import { useMeetingAppContext } from "../../MeetingAppContextDef";
 import { toast } from "react-toastify";
+import useIsTab from "../../hooks/useIsTab";
 
 export function JoiningScreen({
   participantName,
@@ -74,6 +75,7 @@ export function JoiningScreen({
   const webcamRef = useRef();
   const micRef = useRef();
   const isMobile = useIsMobile();
+  const isTablet = useIsTab();
 
   useEffect(() => {
     webcamRef.current = webcamOn;
@@ -482,12 +484,12 @@ export function JoiningScreen({
                             <CameraPermissionDenied />
                           )}
 
-                          {isMobile ? (
+                          {isMobile || isTablet ? (
                             <button 
                             onClick={toggleCamera}
                             className={`rounded-full min-w-auto w-12 h-12 flex items-center justify-center 
-                              ${currentCameraIndex ? "bg-white" : "bg-green-650 text-white"}`}>
-                              <LoopIcon/>
+                              ${currentCameraIndex ? "bg-white" : "bg-gray-300 text-white"}`}>
+                              <LoopIcon />
                             </button>
                           ) : null}
                         </div>
