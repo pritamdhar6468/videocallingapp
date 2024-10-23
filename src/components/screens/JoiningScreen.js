@@ -9,9 +9,6 @@ import WebcamOffIcon from "../../icons/WebcamOffIcon";
 import WebcamOnIcon from "../../icons/Bottombar/WebcamOnIcon";
 import MicOffIcon from "../../icons/MicOffIcon";
 import MicOnIcon from "../../icons/Bottombar/MicOnIcon";
-import FrontCameraIcon from "../../icons/Bottombar/FrontCamera";
-import RearCameraIcon from "../../icons/Bottombar/RearCamera";
-import FrontCameraPermissionDenied from "../../icons/FrontCameraPermissionDenied";
 import MicPermissionDenied from "../../icons/MicPermissionDenied";
 import CameraPermissionDenied from "../../icons/CameraPermissionDenied";
 import DropDown from "../DropDown";
@@ -65,6 +62,7 @@ export function JoiningScreen({
   const [dlgMuted, setDlgMuted] = useState(false);
   const [dlgDevices, setDlgDevices] = useState(false);
   const [didDeviceChange, setDidDeviceChange] = useState(false);
+  const [currentCameraIndex, setCurrentCameraIndex] = useState(0); // Tracks the active camera
 
   const videoPlayerRef = useRef();
   const videoTrackRef = useRef();
@@ -99,7 +97,6 @@ export function JoiningScreen({
 
   useEffect(() => {
     if (webcamOn) {
-
       // Close the existing video track if there's a new one
       if (videoTrackRef.current && videoTrackRef.current !== videoTrack) {
         videoTrackRef.current.stop(); // Stop the existing video track
@@ -112,7 +109,7 @@ export function JoiningScreen({
         !videoPlayerRef.current.paused &&
         !videoPlayerRef.current.ended &&
         videoPlayerRef.current.readyState >
-        videoPlayerRef.current.HAVE_CURRENT_DATA;
+          videoPlayerRef.current.HAVE_CURRENT_DATA;
 
       if (videoTrack) {
         const videoSrcObject = new MediaStream([videoTrack]);
@@ -143,7 +140,7 @@ export function JoiningScreen({
 
   useEffect(() => {
     checkMediaPermission();
-    return () => { };
+    return () => {};
   }, []);
 
   const _toggleWebcam = () => {
@@ -159,6 +156,33 @@ export function JoiningScreen({
     } else {
       getDefaultMediaTracks({ mic: false, webcam: true });
       setWebcamOn(true);
+    }
+  };
+
+  const toggleCamera = async () => {
+    try {
+      const cameras = await getCameras(); // Fetch available camera devices
+
+      // Filter to only video input devices
+      const videoInputDevices = cameras.filter(
+        (device) => device.kind === "videoinput"
+      );
+
+      if (videoInputDevices.length > 0) {
+        // Calculate the next camera index (loop back to the first camera if we're at the last)
+        const nextCameraIndex =
+          (currentCameraIndex + 1) % videoInputDevices.length;
+
+        // Switch to the next camera
+        await changeWebcam(videoInputDevices[nextCameraIndex].deviceId);
+
+        // Update the current camera index
+        setCurrentCameraIndex(nextCameraIndex);
+      } else {
+        console.log("No video input devices available");
+      }
+    } catch (err) {
+      console.log("Error toggling camera:", err);
     }
   };
 
@@ -195,8 +219,6 @@ export function JoiningScreen({
     }
   };
   const changeMic = async (deviceId) => {
-
-
     if (micOn) {
       const currentAudioTrack = audioTrackRef.current;
       currentAudioTrack && currentAudioTrack.stop();
@@ -212,7 +234,6 @@ export function JoiningScreen({
   };
 
   const getDefaultMediaTracks = async ({ mic, webcam }) => {
-
     if (mic) {
       const stream = await getAudioTrack({
         micId: selectedMic.id,
@@ -348,13 +369,11 @@ export function JoiningScreen({
     }
   };
 
-
-
   const getAudioDevices = async () => {
     try {
       if (permissonAvaialble.current?.isMicrophonePermissionAllowed) {
         let mics = await getMicrophones();
-        console.log(mics)
+        console.log(mics);
         let speakers = await getPlaybackDevices();
         const hasMic = mics.length > 0;
         if (hasMic) {
@@ -374,10 +393,9 @@ export function JoiningScreen({
     }
   };
 
-
   useEffect(() => {
-    getAudioDevices()
-  }, [])
+    getAudioDevices();
+  }, []);
 
   const ButtonWithTooltip = ({ onClick, onState, OnIcon, OffIcon }) => {
     const btnRef = useRef();
@@ -461,18 +479,12 @@ export function JoiningScreen({
                           ) : (
                             <CameraPermissionDenied />
                           )}
-{/* 
-                           {isFrontCameraPermissionAllowed ? (
-                            <ButtonWithTooltip
-                              onClick={_toggleWebcam}
-                              onState={webcamOn}
-                              mic={false}
-                              OnIcon={FrontCameraIcon}
-                              OffIcon={RearCameraIcon}
-                            />
-                          ) : (
-                            <FrontCameraPermissionDenied />
-                          )} */}
+
+                          {isMobile ? (
+                            <button onClick={toggleCamera}>
+                              Toggle Camera
+                            </button>
+                          ) : null}
                         </div>
                       </div>
                     </div>
